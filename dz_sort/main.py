@@ -2,46 +2,53 @@ import random
 import time
 
 
-def how_long(func, x):
-    start = time.time()
-    func(x)
-    print(f"Скорость работы: {time.time() - start}")
+# def how_long(func, x):
+#     start = time.time()
+#     func(x)
+#     print(f"Скорость работы: {time.time() - start}")
+
+# ==============================================================================================
+
+def swap(list_data, i, j):
+    list_data[i], list_data[j] = list_data[j], list_data[i]
+
+def siftDown(list_data, i, upper):
+    while(True):
+        l, r = i * 2 + 1, i * 2 + 2
+        if max(l, r) < upper:
+            if list_data[i] >= max(list_data[l], list_data[r]): break
+            elif list_data[l] > list_data[r]:
+                swap(list_data, i, l)
+                i = l
+            else:
+                swap(list_data, i, r)
+                i = r
+        elif l < upper:
+            if list_data[l] > list_data[i]:
+                swap(list_data, i, l)
+                i = l
+            else: break
+        elif r < upper:
+            if list_data[r] > list_data[i]:
+                swap(list_data, i, r)
+                i = r
+            else: break
+        else: break
 
 
-def sorting_pyramid(list_d: list) -> list:
-    # Построение кучи (перегруппировываем массив)
-    for i in range(len(list_d) / 2, i <= 0, -1):  # i <= 0 - возможно надо вернуть просто 0
-        heapify(list_d, len(list_d), i)
+def heapsort(list_data):
+    for j in range((len(list_data) - 2) // 2, -1, -1):
+        siftDown(list_data, j, len(list_data))
 
-    # Один за другим извлекаем элементы из кучи
-    for i in range(len(list_d) - 1, i <= 0, -1):  # i <= 0 - возможно надо вернуть просто 0
-        # Перемещает текущий корень в конец
-        temp_s_p = list_d[0]
-        list_d[0] = list_d[i]
-        list_d[i] = temp_s_p
+    for end in range(len(list_data) - 1, 0, -1):
+        swap(list_data, 0, end)
+        siftDown(list_data, 0, end)
 
-        # Вызываем процедуру heapify на уменьшенной куче
-        heapify(list_d, i, 0)
+# ==============================================================================================
 
+test_list = [random.randint(0, 100) for _ in range(10)]
+print(test_list)
+heapsort(test_list)
+print(test_list)
 
-def heapify(list_data: list, heap_size: int, root_index: int) -> list:
-    largest = root_index  # инициализируем наибольший элемент как корень
-    left_child = 2 * root_index + 1  # левый = 2 * 2 * root_index + 1
-    right_child = 2 * root_index + 2  # правый = 2 * 2 * root_index + 2
-
-    # Если левый дочерний элемент больше корня
-    if (left_child < heap_size and list_data[left_child] > list_data[largest]):
-        largest = left_child
-
-    # Если правый дочерний элемент больше, чем самый большой элемент на данный момент
-    if (right_child < heap_size and list_data[right_child] > list_data[largest]):
-        largest = right_child
-
-    # Если самый большой элемент не корень
-    if (largest != root_index):
-        temp = list_data[root_index]
-        list_data[root_index] = list_data[largest]
-        list_data[largest] = temp
-
-    # Рукурсивно преобразуем в двоичную кучу затронутое поддерево
-    heapify(list_data, heap_size, largest)
+# ==============================================================================================
